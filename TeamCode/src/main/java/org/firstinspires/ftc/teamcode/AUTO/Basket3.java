@@ -99,8 +99,8 @@ public class Basket3 extends LinearOpMode {
         
         Thread driveFirst = new Thread(() -> {
             if (opModeIsActive()) driveStraight(0.7, 30, constant_angle, 500, 0.6, 0.05);
-            if (opModeIsActive()) driveSide(-0.8, 65, constant_angle, 500, 0.7, 0.05);
-            if (opModeIsActive()) driveStraight(-0.5, way_basket, constant_angle, 0, 1, 0.05);
+            if (opModeIsActive()) driveSide(-0.8, 68, constant_angle, 500, 0.7, 0.05);
+            if (opModeIsActive()) driveStraight(-0.5, way_basket , constant_angle, 0, 1, 0.05);
         });
         
         sliderBasket1.start();
@@ -152,7 +152,7 @@ public class Basket3 extends LinearOpMode {
         //Placing 2nd in the basket
         Thread driveThird = new Thread(() -> {
             if (opModeIsActive()) driveSide(-0.5, way_sample_1 + 5, constant_angle, 0, 1, 0.05);
-            if (opModeIsActive()) driveStraight(-0.5, way_basket, constant_angle, 0, 1, 0.05);
+            if (opModeIsActive()) driveStraight(-0.5, way_basket + 7, constant_angle, 0, 1, 0.05);
         });
 
         sliderBasket2.start();
@@ -228,7 +228,7 @@ public class Basket3 extends LinearOpMode {
         safeSleep(500);
         HorRotate.setPosition(horrotate_transfer);
         safeSleep(500);
-        horizontalForward(1150, 0.8);
+        horizontalForward(1200, 0.8);
     }
     private void safeSleep(long millis) {
         long endTime = System.currentTimeMillis() + millis;
@@ -242,9 +242,9 @@ public class Basket3 extends LinearOpMode {
         VerRotate.setPosition(verrotate_player);
         safeSleep(800);
         VerClaw.setPosition(verclaw_open);
-        safeSleep(500);
-        VerClaw.setPosition(verclaw_close);
-        safeSleep(500);
+        safeSleep(800);
+        //VerClaw.setPosition(verclaw_close);
+        //safeSleep(500);
         VerRotate.setPosition(verrotate_chamber);
         safeSleep(500);
     }

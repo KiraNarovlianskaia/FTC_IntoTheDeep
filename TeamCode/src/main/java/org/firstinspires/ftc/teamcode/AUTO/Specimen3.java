@@ -11,11 +11,13 @@ import static org.firstinspires.ftc.teamcode.AUTO.Globals.RightFront;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.VerClaw;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.VerRotate;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.Vertical;
+import static org.firstinspires.ftc.teamcode.AUTO.Globals.distanceSensor;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.high_chamber;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.horclaw_close;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.horclaw_open;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.horrotate_ground;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.horrotate_middle;
+import static org.firstinspires.ftc.teamcode.AUTO.Globals.horrotate_transfer;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.imu;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.middle_chamber;
 import static org.firstinspires.ftc.teamcode.AUTO.Globals.touchHorizontal;
@@ -29,11 +31,13 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Autonomous(name = "Specimen Calibration", group = "Robot")
@@ -65,6 +69,8 @@ public class Specimen3 extends LinearOpMode {
 
         touchHorizontal = hardwareMap.get(TouchSensor.class, "sensor_touch_hor");
         touchVertical = hardwareMap.get(TouchSensor.class, "sensor_touch");
+
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_distance");
 
         VerRotate = hardwareMap.get(Servo.class, "Vertical Rotate");
         VerClaw = hardwareMap.get(Servo.class, "Vertical Claw");
@@ -99,23 +105,23 @@ public class Specimen3 extends LinearOpMode {
         waitForStart();
         double contstant_angle = getHeading();//the first ideal zero of robot
 
-        way_to_chamber1(contstant_angle, 63, 0.45);
+        way_to_chamber1(contstant_angle, 80, 0.45);
         place_specimen();
 
-        go_for_sample(contstant_angle, 15, 1, 137, 0.5);
+        go_for_sample(contstant_angle, 25, 1, 143, 0.5);
 
         deliver_specimen(contstant_angle);
         //going to the wall
-        driveStraight(-0.3, 9, contstant_angle, 0, 1, 0.05);
+        driveStraight(-0.4, 9, contstant_angle, 0, 1, 0.05);
         tacking_from_player();
 
-        way_to_chamber2(contstant_angle, 145, 0.7, 57, 0.5);
+        way_to_chamber2(contstant_angle, 146, 0.7, 70, 0.5);
         place_specimen();
 
         way_to_player(contstant_angle);
         tacking_from_player();
 
-        way_to_chamber3(contstant_angle, 97, 0.5, 65, 0.5);
+        way_to_chamber3(contstant_angle, 100, 0.5, 68, 0.5);
         place_specimen();
 
         //PARKING
@@ -128,12 +134,12 @@ public class Specimen3 extends LinearOpMode {
 
     private void way_to_player(double contstant_angle) {
         Thread sliderZero2 = new Thread(() -> {
-            verticalZero(0.9);
+            verticalZero(1);
         });
         Thread driveFourth = new Thread(() -> {
             driveStraight(-1, 50, contstant_angle, 500, 0.5, 0.05);
-            driveSide(1, 100, contstant_angle, 500, 0.5, 0.05);
-            driveStraight(-0.3, 17, contstant_angle, 0, 1, 0.05);
+            driveSide(1, 110, contstant_angle, 500, 0.5, 0.05);
+            driveStraight(-0.3, 22, contstant_angle, 0, 1, 0.05);
         });
         sliderZero2.start();
         driveFourth.start();
@@ -207,8 +213,8 @@ public class Specimen3 extends LinearOpMode {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
-        horizontalForward(-800, -0.7);
+        //takingsample();
+        horizontalForward(-1200, -0.7);
         HorRotate.setPosition(horrotate_ground);
         safeSleep(500);
         HorClaw.setPosition(horclaw_close);
@@ -222,7 +228,7 @@ public class Specimen3 extends LinearOpMode {
         VerClaw.setPosition(verclaw_open);
         safeSleep(500);
         VerRotate.setPosition(verrotate_player);
-        safeSleep(500);
+        //safeSleep(500);
     }
 
     private void way_to_chamber1(double contstant_angle, double distance, double slowdownFactor) {
@@ -277,6 +283,44 @@ public class Specimen3 extends LinearOpMode {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+    private void takingsample() {
+        horizontalForward(-400, -0.8);
+        HorRotate.setPosition(horrotate_ground);
+        safeSleep(500);
+        horizontal_by_distance(-0.8);
+        HorClaw.setPosition(horclaw_close);
+        safeSleep(500);
+
+        //horizontalForward(1150, 0.8);
+    }
+    public void horizontal_by_distance(double power) {
+
+        // Двигаемся, пока расстояние больше 5 см
+        while (opModeIsActive() && distanceSensor.getDistance(DistanceUnit.CM) > 5.5) {
+            Horizontal.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            Horizontal.setPower(power);
+        }
+
+        // Останавливаем мотор
+        Horizontal.setPower(0);
+        Horizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Устанавливаем цель: ещё -300 тиков
+        Horizontal.setTargetPosition(-250);
+        Horizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Horizontal.setPower(power);
+
+        // Ждём, пока мотор едет к цели
+        while (opModeIsActive() && Horizontal.isBusy()) {
+            // Можно добавить отладку:
+            // telemetry.addData("Current Pos", Horizontal.getCurrentPosition());
+            // telemetry.update();
+        }
+
+        // После достижения позиции — остановить мотор
+        Horizontal.setPower(0);
+        Horizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 

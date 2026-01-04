@@ -34,7 +34,7 @@ public class Globals {
     public static final double PULSES = 537.7;
     public static final double PI = 3.1415;
     public static final double PULSES_PER_CM = PULSES / (WHEEL_DIAMETER * PI);
-    public static final double verclaw_open = 0.3;
+    public static final double verclaw_open = 0.34;
     public static final double verclaw_close = 0.63;
     public static final double verrotate_chamber = 0.24;
     public static final double verrotate_player = 0.89;
@@ -50,12 +50,9 @@ public class Globals {
     public static final int sample = -1700;
     public static final int transfer = 1500;
     public static final int low_basket = -1000;
-    public static final int way_basket = 20;
+    public static final int way_basket = 26;
     public static final int way_basket_3 = way_basket + 5;
     public static final int way_sample_1 = 6;
     public static final int way_sample_2 = 30;
-
-
-
 
 }

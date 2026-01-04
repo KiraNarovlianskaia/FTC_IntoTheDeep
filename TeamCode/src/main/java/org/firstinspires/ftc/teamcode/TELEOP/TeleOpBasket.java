@@ -100,6 +100,7 @@ public class TeleOpBasket extends LinearOpMode {
             // MAGIC BUTTON ZERO
             if (gamepad2.left_bumper) {
                 VerClaw.setPosition(verclaw_open);
+                sleep(500);
                 VerRotate.setPosition(verrotate_chamber);
                 Vertical.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if (!touchSensor.isPressed()) {
@@ -135,7 +136,7 @@ public class TeleOpBasket extends LinearOpMode {
                         }
                         break;
                     case STEP3:
-                        VerRotate.setPosition(verrotate_player);
+                        //VerRotate.setPosition(verrotate_player);
                         if (elapsed > 500) {
                             seqState = SpecialSeqState.STEP4;
                             Vertical.setTargetPosition(high_basket);
